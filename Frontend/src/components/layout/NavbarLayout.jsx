@@ -7,13 +7,13 @@ export default function NavBarLayout() {
                 <div className="container flex justify-between">
                     <Link to="/" className="mt-auto">
                         <p className="mb-0 mt-auto font-display text-3xl font-bold">
-                            Projects
+                            Project managment
                         </p>
                     </Link>
-                    {/* <nav className="flex gap-4 ">
-                        <button>Login</button>
-                        <button>Sign up</button>
-                    </nav> */}
+                    <nav className="flex gap-4 ">
+                        <button className="bg-black">Login</button>
+                        <button className="bg-black">Sign up</button>
+                    </nav>
                 </div>
             </header>
             <Outlet />

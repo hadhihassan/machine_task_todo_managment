@@ -1,28 +1,35 @@
 import jwt from "jsonwebtoken";
-import { NotFoundError } from "../utils/errorTypes.js";
 import { JWT_SECRET_KEY } from "../config/constants.js";
 import User from "../models/user-model.js";
-
+import mongoose from 'mongoose'
 
 export async function verifyUser(req, res, next) {
     try {
-        const tokenData = req.headers.authorization;
-        if (!tokenData) throw new NotFoundError("Token not found");
+        const token = req.headers.authorization;
+        if (!token) {
+            return res.status(STATUS_CODES.UNAUTHORIZED).json({ message: "Token not provided" });
+        }
 
-        const decodedTokenData = jwt.verify(
-            tokenData.split(" ")[1],
-            JWT_SECRET_KEY
-        );
-        if (!decodedTokenData) new Error("Invalid token data");
+        const decodedToken = jwt.verify(token.slice(7), JWT_SECRET_KEY);
+        console.log("JWT Token", decodedToken, token.slice(7))
+        const objectId = new mongoose.Types.ObjectId(decodedToken.id);
+        const userData = await User.findById(objectId);
+        if (!userData) {
+            return res.status(STATUS_CODES.UNAUTHORIZED).json({ message: "Invalid token" });
+        }
 
-        const user = await User.findOne({ _id: decodedTokenData.sub });
-        if (!user) throw new NotFoundError("User not found");
+        if (userData.isBlock) {
+            return res.status(STATUS_CODES.UNAUTHORIZED).json({
+                status: STATUS_CODES.UNAUTHORIZED,
+                message: "Sorry your blocked",
+                isBlocked: true
+            });
+        }
 
-        //@ts-ignore
-        req.user = user ? user : undefined;
-
+        req.userId = userData._id;
         next();
+
     } catch (error) {
-        next(error);
+        return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
     }
 }

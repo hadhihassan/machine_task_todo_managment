@@ -1,7 +1,12 @@
-
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { loginUser } from '../../services/AuthServie';
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-hot-toast'
+
 export default function Login() {
+
+    const navigate = useNavigate()
 
     const formik = useFormik({
         initialValues: {
@@ -16,9 +21,28 @@ export default function Login() {
                 .min(6, 'Password must be at least 6 characters')
                 .required('Password is required')
         }),
-        onSubmit: (values) => {
-            // Handle form submission
-            console.log('Form data', values);
+        onSubmit: async (values) => {
+            try {
+                const { data } = await loginUser(values)
+                if (!data.success) {
+                    return toast(data.message)
+                }
+
+                const token = data.token
+                localStorage.setItem("token", token)
+
+                toast(data.message)
+
+                navigate("/")
+            } catch (error) {
+                const { data } = error.response
+                if (data?.errors?.length > 0) {
+                    return toast.error(data.errors.map(err => err.msg).join(", "));
+                }
+                let errorMessage = "Account Created Failed";
+                errorMessage = data.message || 'Internal Server error';
+                toast.error(errorMessage)
+            }
         }
     });
 
@@ -60,7 +84,6 @@ export default function Login() {
                             <div className="text-red-500 text-sm">{formik.errors.password}</div>
                         ) : null}
                     </div>
-
                     <button
                         type="submit"
                         className="w-full py-2 px-4 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-lg transition duration-300"

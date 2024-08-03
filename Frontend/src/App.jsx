@@ -6,6 +6,7 @@ import AuthLayout from './components/layout/AuthLayout'
 import Login from './page/login/index'
 import Register from './page/register/index'
 import HomeScreen from './page/homeScreen/index'
+import VerifyPage from './page/verify';
 
 function App() {
 
@@ -24,7 +25,7 @@ function App() {
             <Route element={<AuthLayout />}>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/verify-user" element={<div>verify-user</div>} />
+              <Route path="/verify-user" element={<VerifyPage />} />
             </Route>
           </Routes>
         </Router>

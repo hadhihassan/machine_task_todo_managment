@@ -1,10 +1,12 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { registerUser } from '../../services/AuthServie'
-import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom' 
 import { toast } from 'react-hot-toast'
 
 export default function Register() {
+
+    const navigate = useNavigate()
 
     const formik = useFormik({
         initialValues: {
@@ -34,7 +36,6 @@ export default function Register() {
         onSubmit: async (values) => {
             try {
                 const { data } = await registerUser(values)
-                console.log(data)
                 if (!data.success) {
                     return toast(data.message)
                 }
@@ -46,12 +47,17 @@ export default function Register() {
                         </button>
                     </span>
                 ));
+
+                navigate("/verify-user")
             } catch (error) {
-                let errorMessage = "Account Created Failed";
-                if (error instanceof AxiosError) {
-                    errorMessage = error.response?.data.message;
+                if (error.response.data.errors.length) {
+                    return toast.error(error.response.data.errors.map(err => err.msg).join(", "));
                 }
-                toast.error(errorMessage || 'Internal Server error')
+                let errorMessage = "Account Created Failed";
+                if (error.response.data.message) {
+                    errorMessage = error.response.data.message;
+                }
+                return toast.error(errorMessage || 'Internal Server error')
             }
         }
     });
