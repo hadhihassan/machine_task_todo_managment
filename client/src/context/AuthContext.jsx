@@ -9,30 +9,21 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const storedAuth = localStorage.getItem('auth');
         if (storedAuth) {
-            setAuth(JSON.parse(storedAuth));
+            const data = JSON.parse(storedAuth)
+            setAuth(() => data);
         }
     }, []);
 
-    useEffect(() => {
-        if (auth) {
-            localStorage.setItem('auth', JSON.stringify(auth));
-        } else {
-            localStorage.removeItem('auth');
-        }
-    }, [auth]);
-
     const login = (userData) => {
-        setAuth(userData);
+        setAuth(()=> userData);
     };
 
     const logout = () => {
-        setAuth(null);
+        setAuth(()=> null);
     };
 
-
-
     return (
-        <AuthContext.Provider value={{ auth, login, logout, loading, setLoading }}>
+        <AuthContext.Provider value={{ auth , login, logout, loading, setLoading }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,5 +1,5 @@
-import { SERVER_URL } from "../constants/server";
-import axios from "./axios";
+import { SERVER_URL } from "../constants/Server";
+import axios from "./Axios";
 
 export async function loginUser(values) {
     return await axios.post(`/login`, values, {

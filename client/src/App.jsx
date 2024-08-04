@@ -7,6 +7,8 @@ import Login from './page/login/index'
 import Register from './page/register/index'
 import HomeScreen from './page/homeScreen/index'
 import VerifyPage from './page/verify';
+import { ProtectedRoute, LogedUsers } from './components/ProtectedRoute'
+
 
 function App() {
 
@@ -15,17 +17,20 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
+
             <Route element={<NavBarLayout />}>
-              <Route path="/" element={<HomeScreen />} />
-              {/* <Route path="/blogs/:id" element={<BlogContent />} />
-              <Route path="/profile" element={<ProtectedLayout />}>
-                <Route index element={<Profile />} />
-              </Route> */}
+              {/* Protected routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<HomeScreen />} />
+              </Route>
             </Route>
+
             <Route element={<AuthLayout />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/verify-user" element={<VerifyPage />} />
+              <Route element={<LogedUsers />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/verify-user" element={<VerifyPage />} />
+              </Route>
             </Route>
           </Routes>
         </Router>

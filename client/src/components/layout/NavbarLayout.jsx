@@ -1,6 +1,21 @@
+import { useContext } from 'react'
 import { Link, Outlet } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+
 
 export default function NavBarLayout() {
+    
+
+    const { logout }  = useContext(AuthContext);
+    const navigate = useNavigate()
+
+    function handleLogout(){
+        console.log("logouting")
+        navigate("/login")
+        logout()
+    }
     return (
         <><div className="flex-row">
             <header className="sticky top-0 mb-6 bg-accent py-4 shadow">
@@ -11,8 +26,7 @@ export default function NavBarLayout() {
                         </p>
                     </Link>
                     <nav className="flex gap-4 ">
-                        <button className="bg-black">Login</button>
-                        <button className="bg-black">Sign up</button>
+                        <button className="bg-black" onClick={handleLogout}>LogOut</button>
                     </nav>
                 </div>
             </header>

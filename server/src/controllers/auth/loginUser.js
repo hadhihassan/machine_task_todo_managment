@@ -23,7 +23,7 @@ export const loginUser = asyncErrorHandler(async (req, res) => {
         });
     }
 
-    if (!logedUSer.isVerified) {
+    if (!logedUser.isVerified) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
             success: false,
             message: "Youre not verified, please verify.",
@@ -34,6 +34,7 @@ export const loginUser = asyncErrorHandler(async (req, res) => {
     return res.status(StatusCodes.ACCEPTED).json({
         success: true,
         message: "Loging Successfull",
-        token
+        token,
+        userName: logedUser.name
     })
 });

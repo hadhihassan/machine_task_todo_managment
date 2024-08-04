@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SERVER_URL } from "../constants/server";
+import { SERVER_URL } from "../constants/Server";
 
 
 const api = axios.create({
