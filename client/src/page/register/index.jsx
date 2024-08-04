@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { registerUser } from '../../services/AuthServie'
+import { registerUser } from '../../services/AuthService'
 import { useNavigate } from 'react-router-dom' 
 import { toast } from 'react-hot-toast'
 

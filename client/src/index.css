@@ -8,11 +8,16 @@
 
   color-scheme: light dark;
   background-image: linear-gradient(to right,#050709, #1d0747);
-
+  
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.modal-bg{
+  color-scheme: light dark;
+  background-image: linear-gradient(to right,#fdfdfd, #ffffff);
 }
 
 button {
@@ -24,13 +29,6 @@ button {
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
 @media (prefers-color-scheme: light) {

@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { verifyUser } from '../../services/AuthServie'
+import { verifyUser } from '../../services/AuthService'
 import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'

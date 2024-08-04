@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Project from '../models/projectModel.js';
+import Todo from '../models/todoModel.js';
 
 export const connectDatabase = () => {
     mongoose
@@ -8,3 +10,5 @@ export const connectDatabase = () => {
         })
         .catch((err) => console.error(err));
 };
+
+export { Project, Todo };

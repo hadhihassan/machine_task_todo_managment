@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { loginUser } from '../../services/AuthServie';
+import { loginUser } from '../../services/AuthService';
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import { AuthContext } from '../../context/AuthContext';

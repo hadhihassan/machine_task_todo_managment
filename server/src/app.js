@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
 dotenv.config();
@@ -25,7 +26,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use( authRoutes);
+app.use(authRoutes);
+app.use("/project", projectRoutes);
 app.use(errorHandler);
 app.all("", (req, res) => {
     console.log("here", req)

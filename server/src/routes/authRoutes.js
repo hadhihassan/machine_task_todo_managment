@@ -2,9 +2,8 @@ import express from 'express';
 import { registerUser } from '../controllers/auth/registerUser.js'
 import { verifyUser } from '../controllers/auth/verifyUser.js'
 import { loginUser } from '../controllers/auth/loginUser.js'
-import { registerSchema, loginSchema, verificationSchema } from '../dtos/auth-dto.js'
+import { registerSchema, loginSchema, verificationSchema } from '../dtos/authDto.js'
 import { validateHandler } from '../middlewares/validateHandler.js'
-
 const router = express.Router();
 
 
