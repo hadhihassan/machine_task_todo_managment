@@ -1,15 +1,13 @@
 import { useState } from 'react'
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import { createNewProject } from '../services/ProjectService';
 import { projectSchema } from '../schema/projectSchema'
 
 
-export default function ProjectForm() {
+export default function ProjectForm(props) {
 
-
-    const navigate = useNavigate()
+    
     const [isEditing, setIsEditing] = useState({});
 
     const formik = useFormik({
@@ -26,17 +24,14 @@ export default function ProjectForm() {
                 if (!data.success) {
                     return toast(data.message)
                 }
-                toast((t) => (
+                toast(() => (
                     <span className='flex justify-center items-center text-sm gap-2'>
-                        Verication needed
-                        <button className='bg-violet-700 text-gray-950 font-sans font-semibold' onClick={() => toast.dismiss(t.id)}>
-                            Enter code to verify
-                        </button>
+                        Success fully created a new project
                     </span>
                 ));
-
-                navigate("/verify-user")
+                props.update()
             } catch (error) {
+                console.log(error)
                 if (error.response.data.errors.length) {
                     return toast.error(error.response.data.errors.map(err => err.msg).join(", "));
                 }

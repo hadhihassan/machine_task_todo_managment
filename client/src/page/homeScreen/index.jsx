@@ -36,14 +36,14 @@ export default function HomeScreen() {
                 New Project
             </button>
             <Modal isOpen={openModal} onClose={onClose}>
-                <ProjectForm />
+                <ProjectForm update={fetchProject}/>
             </Modal>
             <div className="w-full mb-9 mt grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-5">
                 {
                     projects.length ? (<>
                         {
                             projects?.map((project) => (
-                                <ProjectCard project={project} update={fetchProject}/>
+                                <ProjectCard project={project} update={fetchProject} key={project._id}/>
                             ))
                         }
                     </>) : <>
