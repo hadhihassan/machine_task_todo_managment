@@ -1,7 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { verifyUser } from '../../services/AuthService'
-import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 
@@ -42,7 +41,7 @@ export default function VerifyPage() {
                     toast.error(error.response.data.errors.map(err => err.msg).join(", "));
                 }
                 let errorMessage = "Account Created Failed";
-                if (error instanceof AxiosError) {
+                if (error?.response?.data.message) {
                     errorMessage = error.response?.data.message;
                 }
                 toast.error(errorMessage || 'Internal Server error')
