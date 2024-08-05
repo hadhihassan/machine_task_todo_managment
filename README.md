@@ -89,6 +89,3 @@ SMTP_PASS=your_email_id_password
 3. Run the tests:
     ```bash
     npm test
-
-
-
