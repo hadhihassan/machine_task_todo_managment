@@ -4,10 +4,10 @@ import Todo from '../../models/todoModel.js';
 import Project from '../../models/projectModel.js';
 
 
-export const createNewProject = asyncErrorHandler(async () => {
-    const { id } = req.body;
+export const deletedProject = asyncErrorHandler(async () => {
+    const { _id } = req.body;
 
-    const Project = await Project.findById(id);
+    const Project = await Project.findById(_id);
     if (!Project) {
         return res.status(StatusCodes.NOT_FOUND).json({
             success: false,
@@ -28,5 +28,19 @@ export const createNewProject = asyncErrorHandler(async () => {
     return res.status(StatusCodes.NO_CONTENT).json({
         success: true,
         message: "Successfully project removed."
+    })
+});
+
+export const deletedTask = asyncErrorHandler(async (req,res) => {
+    const { _id } = req.body;
+        const deleteTodo = await Todo.findByIdAndDelete(_id);
+
+    if (!deleteTodo) {
+        throw new Error("Task deletion failed")
+    }
+
+    return res.status(StatusCodes.NO_CONTENT).json({
+        success: true,
+        message: "Successfully Task deletion."
     })
 })

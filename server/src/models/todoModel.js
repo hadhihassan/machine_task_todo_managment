@@ -9,7 +9,7 @@ const todoSchema = new Schema({
     status: {
         type: String,
         enum: ['Pending', 'Completed'],
-        default: 'pending',
+        default: 'Pending',
     },
 }, {
     timestamps: true

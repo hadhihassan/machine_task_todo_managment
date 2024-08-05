@@ -20,3 +20,28 @@ export const projectIdSchema = [
     body("_id")
         .exists()
 ]
+
+export const taskSchema = [
+    body("status")
+        .trim()
+        .notEmpty().withMessage("Title is required"),
+    body("description")
+        .trim()
+        .notEmpty().withMessage("description is required")
+        .isLength({ min: 3 }).withMessage('description must be at least 3 characters long'),
+]
+
+export const taskIdSchema = [
+    body("_id")
+        .exists()
+]
+
+export const newTaskSchema = [
+    body("projectId")
+        .trim()
+        .notEmpty(),
+    body("task")
+        .trim()
+        .notEmpty().withMessage("Task is required")
+        .isLength({ min: 3 }).withMessage('Task must be at least 3 characters long'),
+]

@@ -11,7 +11,6 @@ export async function verifyUser(req, res, next) {
         }
 
         const decodedToken = jwt.verify(token.slice(7), process.env.JWT_SECRET_KEY);
-        console.log("JWT Token", decodedToken, token.slice(7))
         const objectId = new mongoose.Types.ObjectId(decodedToken.id);
         const userData = await User.findById(objectId);
         if (!userData) {
@@ -22,7 +21,6 @@ export async function verifyUser(req, res, next) {
         next();
 
     } catch (error) {
-        console.log(error)
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
     }
 }

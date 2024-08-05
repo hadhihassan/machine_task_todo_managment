@@ -8,7 +8,7 @@ export const createNewProject = asyncErrorHandler(async (req, res) => {
     const { title, description, todos } = req.body;
     const { userId } = req;
 
-    const isExisting = await Todo.findOne({ title });
+    const isExisting = await Project.findOne({ title });
     if (isExisting) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             success: false,
@@ -23,9 +23,9 @@ export const createNewProject = asyncErrorHandler(async (req, res) => {
         title,
         description,
         todos: todosIds,
-        user : userId
+        user: userId
     })
-    
+
     if (!saveProject) {
         throw new Error("Project create failed")
     }
@@ -35,3 +35,35 @@ export const createNewProject = asyncErrorHandler(async (req, res) => {
         message: "Successfully project initiated."
     })
 })
+
+export const addNewTask = asyncErrorHandler(async (req, res) => {
+    const { projectId, task } = req.body;
+
+    const isExisting = await Todo.findOne({ description: task })
+    if (isExisting) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: "Task is already exisiting!"
+        })
+    }
+    const project = await Project.findById(projectId)
+    if (isExisting && project.todos.includes(isExisting._id) && isExisting) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: "Task is already exisint"
+        })
+    }
+    const newTask = await Todo.create({ description: task })
+    project.todos.push(newTask._id)
+    await project.save()
+
+    if (!newTask) {
+        throw new Error("Task create failed")
+    }
+
+    return res.status(StatusCodes.CREATED).json({
+        success: true,
+        message: "Successfully new task created."
+    })
+})
+

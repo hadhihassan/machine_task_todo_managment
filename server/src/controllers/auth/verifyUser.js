@@ -19,7 +19,6 @@ export const verifyUser = asyncErrorHandler(async (req, res) => {
     const updateUser = await User.findByIdAndUpdate(isExisiting.user, {
         isVerified : true
     })
-    console.log(isExisiting, updateUser)
     if(!updateUser){
         return res.status(StatusCodes.BAD_REQUEST).json({
             success: false,

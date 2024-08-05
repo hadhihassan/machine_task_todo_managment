@@ -7,7 +7,6 @@ export const getProjects = asyncErrorHandler(async (req, res) => {
     const { userId } = req;
 
     const projects = await Project.find({ user: userId }).populate('user').populate('todos');
-    console.log(projects)
     return res.status(StatusCodes.CREATED).json({
         success: true,
         message: "Successfully project initiated.",

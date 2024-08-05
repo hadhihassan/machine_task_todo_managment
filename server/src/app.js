@@ -19,20 +19,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-    console.log(`Origin: ${req.get('Origin') || 'No Origin'}`);
-    console.log(`Path: ${req.path}`);
-    console.log(`Body: ${JSON.stringify(req.body)}`);
-    next();
-});
 
 app.use(authRoutes);
 app.use("/project", projectRoutes);
 app.use(errorHandler);
-app.all("", (req, res) => {
-    console.log("here", req)
-    res.json({ message: "Hello world" });
-});
+
 
 
 export default app;
