@@ -4,14 +4,14 @@ import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import { createNewProject } from '../services/ProjectService';
-
+import { projectSchema } from '../schema/projectSchema'
 
 
 export default function ProjectForm() {
 
+
     const navigate = useNavigate()
     const [isEditing, setIsEditing] = useState({});
-
 
     const formik = useFormik({
         initialValues: {
@@ -20,29 +20,7 @@ export default function ProjectForm() {
             todo: '',
             todos: [],
         },
-        validationSchema: Yup.object({
-            title: Yup.string()
-                .trim()
-                .strict('Invalid title')
-                .required('Name is required')
-                .min(3, "Title must be at least 3 characters")
-                .max(100, "Title must be at less than 100 characters"),
-            description: Yup.string()
-                .trim()
-                .strict('Invalid description')
-                .required('description is required')
-                .min(3, "description must be at least 3 characters")
-                .max(100, "description must be at less than 100 characters"),
-            todo: Yup.string()
-                .trim()
-                .strict('Invalid task')
-                .min(3, "Task must be at least 3 characters")
-                .max(100, "Task must be at less than 100 characters"),
-            todos: Yup.array()
-                .of(Yup.string())
-                .min(3, 'At least 3 task are required')
-                .max(20, 'No more than 20 tasks allowed'),
-        }),
+        validationSchema: projectSchema,
         onSubmit: async (values) => {
             try {
                 const { data } = await createNewProject(values)
@@ -52,7 +30,7 @@ export default function ProjectForm() {
                 toast((t) => (
                     <span className='flex justify-center items-center text-sm gap-2'>
                         Verication needed
-                        <button className='bg-violet-700 text-gray-950 font-sans font-semibold'  onClick={() => toast.dismiss(t.id)}>
+                        <button className='bg-violet-700 text-gray-950 font-sans font-semibold' onClick={() => toast.dismiss(t.id)}>
                             Enter code to verify
                         </button>
                     </span>
@@ -101,6 +79,8 @@ export default function ProjectForm() {
         updatedTodos[index] = newValue;
         formik.setFieldValue("todos", updatedTodos);
     };
+
+
     return (
         <div>
             <form onSubmit={formik.handleSubmit} className='p-4'>
