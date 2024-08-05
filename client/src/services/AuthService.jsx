@@ -1,4 +1,3 @@
-import { SERVER_URL } from "../constants/Server";
 import axios from "./Axios";
 
 export async function loginUser(values) {
