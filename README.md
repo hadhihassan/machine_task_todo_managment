@@ -71,6 +71,10 @@ JWT_EXPIRES=your_jwt_token_expires_time
 
 SMTP_HOST=your_email_host
 SMTP_SERVICE=your_email_service
+SMTP_PORT=your_protocoal_port
+SMTP_USER=your_email_id
+SMTP_PASS=your_email_id_password
+
 ```
 ## Testing Setup
 
@@ -87,6 +91,4 @@ SMTP_SERVICE=your_email_service
     npm test
 
 
-SMTP_PORT=your_protocoal_port
-SMTP_USER=your_email_id
-SMTP_PASS=your_email_id_password
+
