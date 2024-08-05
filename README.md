@@ -61,9 +61,6 @@ VITE_SERVER_URL=http://your_server_url
 ### Server (`server/.env`)
 
 ```env
-### Server (`server/.env`)
-
-```env
 PORT=your_server_runging_port
 
 CLIENT_URL=your_client_port
