@@ -50,11 +50,6 @@ export default function HomeScreen() {
                         not projects
                     </>
                 }
-                {/* <ProjectCard /> */}
-                {/* <ProjectCard /> */}
-                {/* <ProjectCard /> */}
-                {/* <ProjectCard /> */}
-                {/* <ProjectCard /> */}
             </div>
         </main >
     )
