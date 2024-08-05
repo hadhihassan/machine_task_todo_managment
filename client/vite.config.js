@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      external: [], // Ensure axios is not listed here
+      external: [], 
     },
+  }
 })
