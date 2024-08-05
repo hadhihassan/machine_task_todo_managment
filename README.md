@@ -71,7 +71,7 @@ JWT_EXPIRES=your_jwt_token_expires_time
 
 SMTP_HOST=your_email_host
 SMTP_SERVICE=your_email_service
-
+```
 ## Testing Setup
 
 ### Client Testing
