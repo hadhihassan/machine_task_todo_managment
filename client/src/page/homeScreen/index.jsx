@@ -16,7 +16,6 @@ export default function HomeScreen() {
     const fetchProject = async () => {
         try {
             const data = await getProjects()
-            console.log(data.data.projects)
             if (data.data.projects.length) {
                 setProjects(data?.data?.projects)
             }
@@ -44,7 +43,7 @@ export default function HomeScreen() {
                     projects.length ? (<>
                         {
                             projects?.map((project) => (
-                                <ProjectCard project={project}/>
+                                <ProjectCard project={project} update={fetchProject}/>
                             ))
                         }
                     </>) : <>

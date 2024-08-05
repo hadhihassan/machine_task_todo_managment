@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import Modal from './Modal'
 import { toast } from 'react-hot-toast'
-import { editProject, editTask, deleteTask, updateTaskStatus, exportGist } from '../services/ProjectService'
+import { editProject, editTask, deleteTask, updateTaskStatus, exportGist, addNewTod } from '../services/ProjectService'
 import { downloadMarkdown } from '../utils/DownloadGitFile';
 import { calculateCompletedTask } from '../utils/CalculateCompletedTask';
+import moment from 'moment'
 
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, update }) {
 
-    const [projectData, setData] = useState(null)
+    const [projectData, setData] = useState(project)
+    const [newTask, setNewTask] = useState(null)
+    const [openNewTaskInput, setopenNewTaskInput] = useState(false)
     const [numOfCompletd, setNumber] = useState(0)
     const [open, setOpen] = useState(false)
     const [isTitleEditing, setTitleEditing] = useState(false)
@@ -45,12 +48,12 @@ export default function ProjectCard({ project }) {
 
     const taskStatusUpdate = async (index) => {
         try {
-            console.log(projectData.todos[index]._id)
             const response = await updateTaskStatus(projectData.todos[index]._id)
-            console.log(response)
             if (!response.data.success) {
                 return toast.error(response.message)
             }
+            update()
+
             return toast.success(response.data.message)
         } catch (error) {
             if (error.response.errors) {
@@ -64,12 +67,15 @@ export default function ProjectCard({ project }) {
         }
     };
 
+
     const updateProject = async () => {
         try {
             const response = await editProject(projectData)
             if (!response.data.success) {
                 return toast.error(response.message)
             }
+            setTitleEditing(prev => !prev)
+            update()
             return toast.success(response.data.message)
         } catch (error) {
             if (error.response.errors) {
@@ -108,6 +114,7 @@ export default function ProjectCard({ project }) {
                 return toast.error(response.data?.message || "Somthing wen wrong")
             }
             setTaskEditing(prevState => ({ ...prevState, [index]: false }));
+            update()
             return toast.success(response.data.message)
         } catch (error) {
             if (error.response.errors) {
@@ -124,9 +131,30 @@ export default function ProjectCard({ project }) {
         const data = await exportGist(projectData._id)
         downloadMarkdown(data.data.markdownContent, projectData.title)
     }
+    const handleAddNewTask = async () => {
+        try {
+            const response = await addNewTod(projectData._id, newTask)
+            if (!response.data.success) {
+                return toast.error(response.data?.message || "Somthing wen wrong")
+            }
+            setopenNewTaskInput((prev)=>!prev)
+            update()
+            return toast.success(response.data.message)
+        } catch (error) {
+            if (error.response.errors) {
+                return toast.error(error.response.errors.map(err => err.msg).join(", "));
+            }
+            let errorMessage = "Project remove failed!";
+            if (error.response.data.message) {
+                errorMessage = error.response.data.message;
+            }
+            return toast.error(errorMessage || 'Internal Server error')
+        }
+    }
     useEffect(() => {
         setData(project)
         setNumber(calculateCompletedTask(project.todos))
+        update()
     }, [])
 
     return (<>
@@ -134,47 +162,48 @@ export default function ProjectCard({ project }) {
             <p className="font-sans font-semibold py-5 ">
                 {projectData?.title}
             </p>
-            <p className="text-xs break-words font-light text-slate-200">
+            <p className="text-xs break-words font-light text-slate-200 h-16">
                 {projectData?.description}
             </p>
             <p className="text-sm my-5">
                 <span className="text-violet-400">Summary</span> : {numOfCompletd} / {projectData?.todos?.length} todos completed
             </p>
-            <button className="w-full border my-3 bg-violet-700" onClick={exportt}>Export</button>
+            <button className="w-full border my-3 bg-violet-700" onClick={exportt}>Export as gist</button>
             <button className="w-full border bg-violet-700" onClick={onClose}>Details</button>
         </div >
         <Modal isOpen={open} onClose={onClose}>
-            <div className="border rounded-lg border-violet-900 hover:border-violet-800 p-3 h-full ">
-                <div className="grid grid-cols-4">
+            <div className="rounded-lg border-violet-900 hover:border-violet-800 p-5">
+                <div className="flex mb-4">
                     {
                         isTitleEditing ? (
                             <input
                                 type="text"
                                 name="title"
-                                className={`rounded-md ${isTitleEditing && "border border-violet-500"} focus:outline-none bg-transparent w-full col-span-3 font-sans font-semibold py-5 text-black text-2xl`}
+                                className={`rounded-md border p-2  focus:outline-none bg-transparent w-full  font-sans font-semibold py-3 text-black text-2xl`}
                                 value={projectData?.title}
                                 onChange={(e) => updateProjectState(e.target)}
                                 autoFocus
                             />
                         ) : (
-                            <p className='col-span-3 font-sans font-semibold py-5 text-black text-2xl w-auto'>
+                            <p className=' font-sans font-semibold py-3 text-black text-2xl w-full'>
                                 {projectData?.title}
                             </p>
                         )
                     }
                     <button
-                        className='col-span-1 text-xs font-sans font-semibold text-black w-auto text-start'
+                        className='text-xs font-sans font-semibold   bg-violet-600'
                         onClick={() => isTitleEditing ? updateProject() : setTitleEditing(prev => !prev)}
                     >
                         {isTitleEditing ? "Save" : "Edit"}
                     </button>
                 </div>
-                <div className="grid grid-cols-6">
+
+                <div>
                     {
                         isTitleEditing ? (
                             <textarea
                                 name="description"
-                                className={`rounded-md ${isTitleEditing && "border border-violet-500"} focus:outline-none bg-transparent w-full col-span-6 font-sans py-5 text-black text-xs`}
+                                className={`rounded-md border p-2 focus:outline-none bg-transparent w-full col-span-6 font-sans py-5 text-black text-xs`}
                                 onChange={(e) => updateProjectState(e.target)}
                                 autoFocus
                             >{projectData?.description}</textarea>
@@ -185,60 +214,86 @@ export default function ProjectCard({ project }) {
                         )
                     }
                 </div>
-                <p className="break-words font-semibold text-black mb-2 text-md">
-                    Task
-                </p>
-                {
-                    projectData?.todos?.map((todo, index) => (
-                        <div key={index} className='flex items-center justify-between w-auto py-1'>
-                            <div className={`flex justify-start mx-2 items-center ${isTaskEditing[index] ? "" : "gap-20"}`}>
-                                <div className="flex gap-4 w-[50%] h-full text-start  justify-start items-center text-black">
-                                    {index + 1}
-                                    {isTaskEditing[index] ? (
-                                        <input
-                                            type="text"
-                                            className="rounded-md focus:outline-none bg-transparent text-black"
-                                            value={todo.description}
-                                            onChange={(e) => updateTaskState(index, e.target.value)}
-                                            autoFocus
-                                        />
-                                    ) : (
-                                        <p className='text-gray-700 font-sans text-sm'>{todo.description}</p>
-                                    )}
-                                </div>
-                                <div className={`flex  w-[50%] items-center gap-1 ${!isTaskEditing[index] && "mr-5"}`}>
-                                    <button
-                                        onClick={() => removeTask(index)}
-                                        type="button"
-                                        className="text-violet-600 hover:text-violet-700 font-bold text-xs text-center"
-                                    >
-                                        remove
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => isTaskEditing[index] ? updateTask(index) : editTodo(index)}
-                                        className="text-violet-600 hover:text-violet-700 font-bold text-xs text-center"
-                                    >
-                                        {isTaskEditing[index] ? "Save" : "Edit"}
-                                    </button>
-                                    {
-                                        (todo.status === "Pending" || todo.status === "pending") && (
-                                            <button
-                                                type="button"
-                                                onClick={() => taskStatusUpdate(index)}
-                                                className="text-violet-600 w-[20%] hover:text-violet-700 font-bold text-xs text-center"
-                                            >
-                                                update
-                                            </button>
-                                        )
-                                    }
-                                </div>
+                <div>
+                    <p className="text-sm my-5 text-black">
+                        <span className="text-violet-950">Summary</span> : {numOfCompletd} / {projectData?.todos?.length} todos completed
+                    </p>
+                </div>
+                <p className="break-words font-semibold text-black mb-2 text-md" onClick={() => setopenNewTaskInput((prev)=>!prev)}>
+                Task
+                <span className=' ml-2 mb-2 text-xs font-sans font-semibold text-white border px-2 py-0.5 rounded-full bg-violet-600'>Add task</span>
+
+            </p>
+            {
+                openNewTaskInput && <div className='flex'>
+                    <input
+                        id="description"
+                        name="description"
+                        type="description"
+                        onChange={(e) => setNewTask(e.target.value)}
+                        className={`w-full px-2  py-2 border rounded-md p-2 focus:outline-none bg-transparent text-black border-gray-300
+                            }`}
+                    />
+                    <button className='bg-violet-600' onClick={handleAddNewTask}>Add</button>
+                </div>
+            }
+            {
+                projectData?.todos?.map((todo, index) => (
+                    <div key={index} className='flex items-center justify-between w-auto py-1'>
+                        <div className={`flex border w-full p-3 bg-violet-700 rounded-lg `}>
+                            <div className="flex gap-4 w-full text-start  justify-start items-center">
+                                {index + 1}
+                                {isTaskEditing[index] ? (
+                                    <input
+                                        type="text"
+                                        className="rounded-md focus:outline-none bg-transparent"
+                                        value={todo.description}
+                                        onChange={(e) => updateTaskState(index, e.target.value)}
+                                        autoFocus
+                                    />
+                                ) : (<>
+                                    <div className='w-auto grid grid-cols-1'>
+                                        <p className='font-sans text-sm flex gap-1 m-1'>{todo.description}
+                                            <p className={`text-xs font-sans font-semibold border ${todo.status === "Completed" ? "bg-green-600" : "bg-red-600"} rounded-full px-1`}>{todo.status}</p>
+                                        </p>
+                                        <p className='text-xs text-green-500 font-sans m-1 font-semibold'>{moment(todo.createdAt).format("MMM Do YY")}</p>
+                                    </div>
+                                </>
+                                )}
+                            </div>
+                            <div className={`flex gap-1 `}>
+                                <button
+                                    onClick={() => removeTask(index)}
+                                    type="button"
+                                    className="font-bold text-xs bg-violet-600"
+                                >
+                                    remove
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => isTaskEditing[index] ? updateTask(index) : editTodo(index)}
+                                    className="font-bold text-xs bg-violet-600"
+                                >
+                                    {isTaskEditing[index] ? "Save" : "Edit"}
+                                </button>
+                                {
+                                    (todo.status === "Pending" || todo.status === "pending") && (
+                                        <button
+                                            type="button"
+                                            onClick={() => taskStatusUpdate(index)}
+                                            className="font-bold text-xs bg-violet-600"
+                                        >
+                                            update
+                                        </button>
+                                    )
+                                }
                             </div>
                         </div>
-                    ))
-                }
-            </div>
-        </Modal>
+                    </div>
+                ))
+            }
+        </div>
+    </Modal >
     </>
     )
 } 

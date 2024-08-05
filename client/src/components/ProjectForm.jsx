@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import { createNewProject } from '../services/ProjectService';
@@ -84,14 +83,14 @@ export default function ProjectForm() {
     return (
         <div>
             <form onSubmit={formik.handleSubmit} className='p-4'>
-
+                <p className='text-2xl text-center text-black font-semibold font-sans py-5'>Create new project</p>
                 <div className="mb-4 text-start">
                     <label htmlFor="title" className="block text-gray-950 font-sans ">Title</label>
                     <input
                         id="title"
                         name="title"
                         type="title"
-                        className={`w-full px-10  py-2 border rounded-md focus:outline-none bg-transparent text-black ${formik.touched.title && formik.errors.title ? 'border-red-500' : 'border-gray-300'
+                        className={`w-full px-2  py-2 border rounded-md focus:outline-none bg-transparent text-black ${formik.touched.title && formik.errors.title ? 'border-red-500' : 'border-gray-300'
                             }`}
                         {...formik.getFieldProps('title')}
                     />
@@ -106,7 +105,7 @@ export default function ProjectForm() {
                         name="description"
 
                         type=""
-                        className={`w-full px-10 py-2 border rounded-md focus:outline-none bg-transparent text-black ${formik.touched.description && formik.errors.description ? 'border-red-500' : 'border-gray-300'
+                        className={`w-full px-2 py-2 border rounded-md focus:outline-none bg-transparent text-black ${formik.touched.description && formik.errors.description ? 'border-red-500' : 'border-gray-300'
                             }`}
                         {...formik.getFieldProps('description')}
                     />
@@ -117,19 +116,19 @@ export default function ProjectForm() {
 
                 <div className="mb-4 text-start">
                     <label htmlFor="title" className="block text-gray-950 font-sans ">Task</label>
-                    <div className='flex justify-center items-center'>
+                    <div className='flex justify-center items-center mb-2'>
                         <input
                             id="todo"
                             name="todo"
                             type="title"
-                            className={`mb-2 w-[80%] px-10  py-3 border rounded-md focus:outline-none bg-transparent text-black ${formik.touched.todo && formik.errors.todo ? 'border-red-500' : 'border-gray-300'
+                            className={`w-full px-2 py-3 border-t border-b border-l rounded-md rounded-r-none focus:outline-none bg-transparent text-black ${formik.touched.todo && formik.errors.todo ? 'border-red-500' : 'border-gray-300'
                                 }`}
                             {...formik.getFieldProps('todo')}
                         />
                         <button
                             type="button"
                             onClick={addTodo}
-                            className="text-violet-600 w-[20%] hover:texr-violet-700 font-bold text-xs text-center"
+                            className="bg-violet-600 hover:bg-violet-700 font-bold text-xs px-9 py-4 rounded-l-none"
                         >
                             Add
                         </button>
@@ -143,37 +142,37 @@ export default function ProjectForm() {
                     {formik?.values?.todos?.map((todo, index) => (
                         <div
                             key={index}
-                            className='flex items-center justify-between'>
-                            <div className='flex justify-center items-center gap-4'>
+                            className='flex items-center justify-between p-2 mb-1'>
+                            <div className='flex justify-start items-center gap-2'>
                                 <p className='text-black border rounded-full p-1 text-xs bg-violet-600'></p>
                                 {isEditing[index] ? (
                                     <input
                                         type="text"
-                                        className="rounded-md focus:outline-none bg-transparent text-black "
+                                        className="rounded-md focus:outline-none bg-transparent text-black font-semibold "
                                         value={todo}
                                         onChange={(e) => saveTodo(index, e.target.value)}
                                         autoFocus
                                     />
                                 ) : (
-                                    <p className='text-gray-700 font-sans text-sm'>{todo}</p>
+                                    <p className='text-gray-700 font-sans text-sm font-semibold'>{todo}</p>
                                 )}
                             </div>
-                            <div className='flex justify-end items-center gap-4'>
+                            <div className='flex justify-end items-center gap-2'>
+                                <button
+                                    type="button"
+                                    onClick={() => deleteTodo(index)}
+                                    className="font-bold text-sm bg-violet-600 hover:bg-violet-700 p-2 text-white"
+                                >
+                                    Remove
+                                </button>
                                 <button
                                     type="button"
                                     onClick={() => isEditing[index] ? setIsEditing(prevState => ({ ...prevState, [index]: false })) : editTodo(index)}
-                                    className="text-violet-600 outline-none  w-[20%] hover:text-violet-700 font-bold text-xs text-center"
+                                    className="font-bold text-sm bg-violet-600 hover:bg-violet-700 p-2 text-white"
                                 >
                                     {
                                         isEditing[index] ? "Save" : "Edit"
                                     }
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => deleteTodo(index)}
-                                    className="text-violet-600 w-[20%] hover:text-violet-700 font-bold text-xs text-center"
-                                >
-                                    remove
                                 </button>
                             </div>
                         </div>

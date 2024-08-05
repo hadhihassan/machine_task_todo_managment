@@ -46,3 +46,9 @@ export async function exportGist(projectId) {
     })
 }
 
+export async function addNewTod(projectId, task) {
+    return await axios.post(`/project/add-new-task`, { projectId, task } ,{
+        withCredentials: true
+    })
+}
+

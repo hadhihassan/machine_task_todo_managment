@@ -12,7 +12,6 @@ export default function NavBarLayout() {
     const navigate = useNavigate()
 
     function handleLogout(){
-        console.log("logouting")
         navigate("/login")
         logout()
     }
